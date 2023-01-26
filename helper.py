@@ -17,16 +17,32 @@
 # from tensorflow.keras import Sequential
 # from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 
+def create_tensorboard_callback(dir_name, experiment_name):
+  """
+  Creates TensorBoard callback
 
+  Args:
+    * dir_name (str): directory name of an experiment
+    * experiment_name (str): name of an experiment
+
+  Returns:
+    * callback (tf.keras.callbacks.TensorBoard)
+  """
+  import datetime
+  import tensorflow as tf
+  log_dir = dir_name + "/" + experiment_name + "/" + datetime.datetime.now().strftime('%Y%m%d-%H%M%e')
+  tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+  print(f"Saving logs to {log_dir}")
+  return tensorboard_callback
 
 def view_random_image(target_dir, target_class):
   """
   Plots random image from directory and returns it as numpy array
-  
+
   Args:
     * target_dir (str): directory with images
     * target_class (str): folder name of the class
-    
+
   Returns:
     * The image data (numpy.array)     
   """
@@ -34,7 +50,7 @@ def view_random_image(target_dir, target_class):
   import matplotlib.pyplot as plt
   import os
   import matplotlib.image as mpimg
-  
+
   target_folder = target_dir+target_class
 
   # Get a random image path
@@ -47,24 +63,19 @@ def view_random_image(target_dir, target_class):
   plt.title(target_class)
   plt.axis(False) # Hides axies
   print(f"Image shape: {img.shape}")
-
   return img
-
-  # Plot the validation and trainig curves separately
 
 def plot_loss(history):
   """
   Plots separate loss curves
-  
+
   Args:
     * history (tf.keras.callbacks.History): A history object
-  
+
   Returns:
     * None
-  """
-  
-  import matplotlib.pyplot as plt
-  
+  """  
+  import matplotlib.pyplot as plt  
   loss = history.history['loss']
   val_loss = history.history['val_loss']
 
@@ -72,7 +83,6 @@ def plot_loss(history):
   val_accuracy = history.history['val_accuracy']
 
   epochs = range(len(history.history['loss']))
-
   # Plot loss
   plt.figure(figsize=(10,7))
   plt.plot(epochs, loss, label='training loss')
@@ -89,19 +99,18 @@ def plot_loss(history):
   plt.xlabel("epochs")
   plt.legend()
 
-  # Create a function to import a image and resize it to be able tobe used with our model
 def load_and_prep_image(filename, img_shape=224):
   """
   Reads an image from filename, turns it into a tensor and reshapes it to (img_shape, img_shape, colour_channels)
-  
+
   Args:
     * filename (str): image filename
     * img_shape (int): size of an image
-    
+
   Returns:
     * image (Tensor): scaled (1/255.) tensor
   """
-  
+
   import tensorflow as tf
   # Read in the image
   img = tf.io.read_file(filename=filename)
@@ -116,16 +125,13 @@ def load_and_prep_image(filename, img_shape=224):
 def walk_trought_directory(dir_path):  
   """
   Walk trought directory and prints its content
-  
+
   Args:
     * dir_path (str): directory path
   """
   import os
   for dirpath, dirnames, filenames in os.walk(dir_path):
     print(f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'")
-    
-    
-# Let's make a function to create a model from url
 
 def create_model(model_url, num_classes=10):
   """
@@ -143,36 +149,17 @@ def create_model(model_url, num_classes=10):
   import tensorflow_hub as hub
   from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
   from tensorflow.keras import Sequential
-  
   feature_extractor_layer = hub.KerasLayer(handle=model_url, 
                                            trainable=False, # freeze the already learned patterns
                                            name='feature_extractor_layer',
                                            input_shape=IMAGE_SHAPE+(3,))
-  # Create our own model
   model = Sequential([
       feature_extractor_layer,
       Dense(num_classes, activation='softmax', name='output_layer')
   ])
-
   return model
 
 
 
 
-def create_tensorboard_callback(dir_name, experiment_name):
-  """
-  Creates TensorBoard callback
-  
-  Args:
-    * dir_name (str): directory name of an experiment
-    * experiment_name (str): name of an experiment
-    
-  Returns:
-    * callback (tf.keras.callbacks.TensorBoard)
-  """
-  import datetime
-  import tensorflow as tf
-  log_dir = dir_name + "/" + experiment_name + "/" + datetime.datetime.now().strftime('%Y%m%d-%H%M%e')
-  tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
-  print(f"Saving logs to {log_dir}")
-  return tensorboard_callback
+
