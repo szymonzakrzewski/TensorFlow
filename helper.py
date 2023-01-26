@@ -21,11 +21,11 @@ IMAGE_SHAPE = (224, 224)
 
 def unzip_data(file_url):
   """
-  Downloads data and unzips it
-  
+  Downloads data and unzips it  
   Args:
     * file_url (str): url link to file
   """
+  import zipfile
   !wget file_url
   # Unzip tour data
   zip_ref = zipfile.ZipFile('10_food_classes_10_percent.zip', 'r')
