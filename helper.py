@@ -32,6 +32,8 @@ def view_random_image(target_dir, target_class):
   """
   import random
   import matplotlib.pyplot as plt
+  import os
+  import matplotlib.image as mpimg
   
   target_folder = target_dir+target_class
 
