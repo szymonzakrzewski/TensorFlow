@@ -1,21 +1,21 @@
-import tensorflow as tf
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-import zipfile
-import os
-import pathlib
+# import tensorflow as tf
+# import numpy as np
+# import pandas as pd
+# import matplotlib.pyplot as plt
+# import zipfile
+# import os
+# import pathlib
 
-import matplotlib.image as mpimg
-import random
+# import matplotlib.image as mpimg
 
-from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
-# Make the createing of our model a little easier
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
-from tensorflow.keras import Sequential
-from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
+# from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# # Make the createing of our model a little easier
+# from tensorflow.keras.optimizers import Adam
+# from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
+# from tensorflow.keras import Sequential
+# from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 
 
 
@@ -30,6 +30,9 @@ def view_random_image(target_dir, target_class):
   Returns:
     * The image data (numpy.array)     
   """
+  import random
+  import matplotlib.pyplot as plt
+  
   target_folder = target_dir+target_class
 
   # Get a random image path
@@ -57,6 +60,9 @@ def plot_loss(history):
   Returns:
     * None
   """
+  
+  import matplotlib.pyplot as plt
+  
   loss = history.history['loss']
   val_loss = history.history['val_loss']
 
@@ -93,6 +99,7 @@ def load_and_prep_image(filename, img_shape=224):
   Returns:
     * image (Tensor): scaled (1/255.) tensor
   """
+  
   import tensorflow as tf
   # Read in the image
   img = tf.io.read_file(filename=filename)
@@ -111,6 +118,7 @@ def walk_trought_directory(dir_path):
   Args:
     * dir_path (str): directory path
   """
+  import os
   for dirpath, dirnames, filenames in os.walk(dir_path):
     print(f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'")
     
@@ -130,6 +138,10 @@ def create_model(model_url, num_classes=10):
     An uncompiled Keras Sequantial model with model_url as feature extractor 
     layer and Dense output layer with num_classes output neurons.
   """
+  import tensorflow_hub as hub
+  from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
+  from tensorflow.keras import Sequential
+  
   feature_extractor_layer = hub.KerasLayer(handle=model_url, 
                                            trainable=False, # freeze the already learned patterns
                                            name='feature_extractor_layer',
@@ -143,7 +155,7 @@ def create_model(model_url, num_classes=10):
   return model
 
 
-import datetime
+
 
 def create_tensorboard_callback(dir_name, experiment_name):
   """
@@ -156,6 +168,8 @@ def create_tensorboard_callback(dir_name, experiment_name):
   Returns:
     * callback (tf.keras.callbacks.TensorBoard)
   """
+  import datetime
+  import tensorflow as tf
   log_dir = dir_name + "/" + experiment_name + "/" + datetime.datetime.now().strftime('%Y%m%d-%H%M%e')
   tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
   print(f"Saving logs to {log_dir}")
