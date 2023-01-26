@@ -26,7 +26,7 @@ def unzip_data(file_url):
   Args:
     * file_url (str): url link to file
   """
-  !wget https://storage.googleapis.com/ztm_tf_course/food_vision/10_food_classes_10_percent.zip
+  !wget file_url
   # Unzip tour data
   zip_ref = zipfile.ZipFile('10_food_classes_10_percent.zip', 'r')
   zip_ref.extractall()
