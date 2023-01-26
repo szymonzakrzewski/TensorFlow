@@ -20,6 +20,16 @@ from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 
 
 def view_random_image(target_dir, target_class):
+  """
+  Plots random image from directory and returns it as numpy array
+  
+  Args:
+    * target_dir (str): directory with images
+    * target_class (str): folder name of the class
+    
+  Returns:
+    * The image data (numpy.array)     
+  """
   target_folder = target_dir+target_class
 
   # Get a random image path
@@ -39,7 +49,13 @@ def view_random_image(target_dir, target_class):
 
 def plot_loss(history):
   """
-  Retrun separate loss curves
+  Plots separate loss curves
+  
+  Args:
+    * history (tf.keras.callbacks.History): A history object
+  
+  Returns:
+    * None
   """
   loss = history.history['loss']
   val_loss = history.history['val_loss']
@@ -69,6 +85,13 @@ def plot_loss(history):
 def load_and_prep_image(filename, img_shape=224):
   """
   Reads an image from filename, turns it into a tensor and reshapes it to (img_shape, img_shape, colour_channels)
+  
+  Args:
+    * filename (str): image filename
+    * img_shape (int): size of an image
+    
+  Returns:
+    * image (Tensor): scaled (1/255.) tensor
   """
   import tensorflow as tf
   # Read in the image
@@ -80,3 +103,60 @@ def load_and_prep_image(filename, img_shape=224):
   # rescale the image and get all values betweet 0 & 1
   img = img / 255.
   return img
+
+def walk_trought_directory(dir_path):  
+  """
+  Walk trought directory and prints its content
+  
+  Args:
+    * dir_path (str): directory path
+  """
+  for dirpath, dirnames, filenames in os.walk(dir_path):
+    print(f"There are {len(dirnames)} directories and {len(filenames)} images in '{dirpath}'")
+    
+    
+# Let's make a function to create a model from url
+
+def create_model(model_url, num_classes=10):
+  """
+  Takes a TF Hub Url and craetes a Keras Sequential model with it.
+
+  Args:
+    model_url (str): A TensorFlow Hub feature extraction URL.
+    num_classes (int): Number of putput neurons in the output layer,
+    should be equal to number of target classes, default 10.
+
+  Returns:
+    An uncompiled Keras Sequantial model with model_url as feature extractor 
+    layer and Dense output layer with num_classes output neurons.
+  """
+  feature_extractor_layer = hub.KerasLayer(handle=model_url, 
+                                           trainable=False, # freeze the already learned patterns
+                                           name='feature_extractor_layer',
+                                           input_shape=IMAGE_SHAPE+(3,))
+  # Create our own model
+  model = Sequential([
+      feature_extractor_layer,
+      Dense(num_classes, activation='softmax', name='output_layer')
+  ])
+
+  return model
+
+
+import datetime
+
+def create_tensorboard_callback(dir_name, experiment_name):
+  """
+  Creates TensorBoard callback
+  
+  Args:
+    * dir_name (str): directory name of an experiment
+    * experiment_name (str): name of an experiment
+    
+  Returns:
+    * callback (tf.keras.callbacks.TensorBoard)
+  """
+  log_dir = dir_name + "/" + experiment_name + "/" + datetime.datetime.now().strftime('%Y%m%d-%H%M%e')
+  tensorboard_callback = tf.keras.callbacks.TensorBoard(log_dir=log_dir)
+  print(f"Saving logs to {log_dir}")
+  return tensorboard_callback
