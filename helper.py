@@ -17,6 +17,8 @@
 # from tensorflow.keras import Sequential
 # from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
 
+IMAGE_SHAPE = (224, 224)
+
 def create_tensorboard_callback(dir_name, experiment_name):
   """
   Creates TensorBoard callback
