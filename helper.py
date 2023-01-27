@@ -21,14 +21,13 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
-def unzip_data(file_url, file_name):
+def unzip_data(file_name):
   """
-  Downloads data and unzips it  
+  Unzips file by its name
+  
   Args:
-    * file_url (str): url link to file
     * file_name (str): name of the file to unzip
   """
-  !wget file_url
   # Unzip tour data
   zip_ref = zipfile.ZipFile(file_name, 'r')
   zip_ref.extractall()
