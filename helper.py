@@ -21,6 +21,44 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
+def compage_histories(old_hist, new_hist, initial_epochs=5):
+  """
+  Compares two TensorFlow History objects by printing them on plot
+  Args:
+    * old_hist (tf.keras.callbacks.History) : old history callback
+    * new_hist (tf.keras.callbacks.History) : new history callback
+  """
+  # Get original history measurments
+  acc = old_hist.history['accuracy']
+  loss = old_hist.history['loss']
+
+  val_acc = old_hist.history['val_accuracy']
+  val_loss = old_hist.history['val_loss']
+
+  # Combine old hist with new hist metrics
+  total_acc = acc + new_hist.history['accuracy']
+  total_loss = loss + new_hist.history['loss']
+  total_val_acc = val_acc + new_hist.history['val_accuracy']
+  total_val_loss = val_loss + new_hist.history['val_loss']
+
+  # Make plot accuracy
+  plt.figure(figsize=(8, 8))
+  plt.subplot(2, 1, 1)
+  plt.plot(total_acc, label='Training Accuracy')
+  plt.plot(total_val_acc, label='Val Accuracy')
+  plt.plot([initial_epochs-1, initial_epochs-1], plt.ylim(), label='Start fine funing')
+  plt.legend(loc="lower right")
+  plt.title("Training and Validation Accuracy")
+
+  # Make plot loss
+  plt.figure(figsize=(8, 8))
+  plt.subplot(2, 1, 2)
+  plt.plot(total_loss, label='Training Loss')
+  plt.plot(total_val_loss, label='Val Loss')
+  plt.plot([initial_epochs-1, initial_epochs-1], plt.ylim(), label='Start fine funing')
+  plt.legend(loc="upper right")
+  plt.title("Training and Validation Loss")
+
 def unzip_data(file_name):
   """
   Unzips file by its name
