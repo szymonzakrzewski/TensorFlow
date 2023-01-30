@@ -21,16 +21,16 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
-def visualize_and_predict(images_directory, dataset, model, image_shape = (224,224)):
+def visualize_and_predict(images_directory, class_names, model, image_shape = (224,224)):
   """
   Method for visualizing random image and make prediction on it
   Args:
     * images_directory (str) : path to directory with images
-    * dataset (tf.data.Dataset) : dataset with images
+    * class_names (list[str]) : list of image classes
     * model (tf.keras.Model) : model for predictions
     * image_shape (tuple) : shape of an image, default (224,224)
   """
-  target_class = random.choice(dataset.class_names)
+  target_class = random.choice(class_names)
   target_dir = images_directory + target_class
   random_image = random.choice(os.listdir(target_dir))
   random_image_path = target_dir + "/" + random_image
@@ -40,7 +40,7 @@ def visualize_and_predict(images_directory, dataset, model, image_shape = (224,2
 
   # Predict the image
   prediction = model.predict(tf.expand_dims(tf.image.resize(img, size=image_shape), axis=0))
-  pred_class = dataset.class_names[tf.argmax(prediction[0])]
+  pred_class = class_names[tf.argmax(prediction[0])]
 
   # Plot predicted class of and image
   plt.imshow(img)
