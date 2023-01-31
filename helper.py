@@ -7,6 +7,7 @@ import zipfile
 import os
 import pathlib
 import datetime
+from sklearn.metrics import accuracy_score, confusion_matrix
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # Make the createing of our model a little easier
