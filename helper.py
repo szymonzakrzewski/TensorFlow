@@ -47,7 +47,7 @@ def visualize_and_predict(images_directory, class_names, model, image_shape = (2
   plt.title(f"Original random image from class: {target_class},\n Predicted class: {pred_class}")
   plt.axis(False)
 
-def compage_histories(old_hist, new_hist, initial_epochs=5):
+def compare_histories(old_hist, new_hist, initial_epochs=5):
   """
   Compares two TensorFlow History objects by printing them on plot
   Args:
