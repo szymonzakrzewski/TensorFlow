@@ -23,6 +23,7 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
+
 def make_confusion_matrix(y_true, y_pred, classes=None, figsize=(10, 10), text_size=15, norm=False, savefig=False): 
   """Makes a labelled confusion matrix comparing predictions and ground truth labels.
   If classes is passed, confusion matrix will be labelled, if not, integer class values
@@ -70,9 +71,11 @@ def make_confusion_matrix(y_true, y_pred, classes=None, figsize=(10, 10), text_s
          xticklabels=labels, # axes will labeled with class names (if they exist) or ints
          yticklabels=labels)
   
+
   # Make x-axis labels appear on bottom
   ax.xaxis.set_label_position("bottom")
   ax.xaxis.tick_bottom()
+  plt.xticks(rotation=70)
 
   # Set the threshold for different colors
   threshold = (cm.max() + cm.min()) / 2.
@@ -93,6 +96,7 @@ def make_confusion_matrix(y_true, y_pred, classes=None, figsize=(10, 10), text_s
   # Save the figure to the current working directory
   if savefig:
     fig.savefig("confusion_matrix.png")
+
 
 def visualize_and_predict(images_directory, class_names, model, image_shape = (224,224)):
   """
