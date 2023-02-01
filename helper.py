@@ -246,26 +246,34 @@ def plot_loss(history):
   plt.xlabel("epochs")
   plt.legend()
 
-def load_and_prep_image(filename, img_shape=224):
+def load_and_prep_image(filename, img_shape=224, scale=True):
   """
-  Reads an image from filename, turns it into a tensor and reshapes it to (img_shape, img_shape, colour_channels)
+  Read in an image from file, turn it into tensor, reshapes it
 
   Args:
-    * filename (str): image filename
-    * img_shape (int): size of an image
+    filename (str): path to target image
+    img_shape (int): height/width dimension of target image size
+    scale (bool): scale pixel values from 0-255 to 0-1 or not
 
   Returns:
-    * image (Tensor): scaled (1/255.) tensor
+    Image tensor of shape (img_size, img_size)
   """
+
   # Read in the image
-  img = tf.io.read_file(filename=filename)
-  # Decode the read file into a tensor
-  img = tf.image.decode_image(img)
+  img = tf.io.read_file(filename)
+
+  # Decode image into tensor
+  img = tf.io.decode_image(img, channels=3)
+
   # Resize the image
-  img = tf.image.resize(img,[img_shape, img_shape])
-  # rescale the image and get all values betweet 0 & 1
-  img = img / 255.
-  return img
+  imt = tf.image.resize(img, size=[img_shape, img_shape])
+
+  # Scale
+  if scale:
+    # rescale the image
+    return img/255.
+  else:
+    return img
 
 def walk_trought_directory(dir_path):  
   """
