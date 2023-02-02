@@ -23,12 +23,20 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
-def preprocess_image(image, label, img_shape=224):
+def preprocess_image(image, label, img_shape=224, scale=False):
   """
   Converts img datatype from 'uint8' -> 'float32' and reshapes
   image to [img_shape, img_shape, colour_channels]
+  
+  Args:
+    image (tensor): image tensor
+    label (tensor): class number
+    img_shape (int): target image size
+    scale (bool): scale by 255.
   """
   image = tf.image.resize(img, size=[img_shape, img_shape])
+  if scale:
+    image = image/225.
   return tf.cast(image, dtype=tf.float32), label # return tuple (float32_image, label)
 
 def unzip_data(file_name):
