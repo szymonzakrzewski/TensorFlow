@@ -25,6 +25,96 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
+def create_model_checkpoint_callback(filepath, monitor="val_loss", verbose=1, 
+                                   save_best_only=True, save_weights_only=True,
+                                   save_freq='epoch'):
+  """
+  Creates ModelCheckpoint callback
+
+  Args:
+    filepath: string or PathLike, path to save the model file. e.g.
+      filepath = os.path.join(working_dir, 'ckpt', file_name). filepath
+      can contain named formatting options, which will be filled the value
+      of epoch and keys in logs (passed in on_epoch_end). For example:
+      if filepath is weights.{epoch:02d}-{val_loss:.2f}.hdf5, then the
+      model checkpoints will be saved with the epoch number and the
+      validation loss in the filename. The directory of the filepath should
+      not be reused by any other callbacks to avoid conflicts.
+    monitor: The metric name to monitor. Typically the metrics are set by
+      the Model.compile method. Note:
+      Prefix the name with "val_" to monitor validation metrics.
+      Use "loss" or "val_loss" to monitor the model's total loss.
+      If you specify metrics as strings, like "accuracy", pass the same
+      string (with or without the "val_" prefix).
+      If you pass metrics.Metric objects, monitor should be set to
+      metric.name
+      If you're not sure about the metric names you can check the contents
+      of the history.history dictionary returned by
+      history = model.fit()
+      Multi-output models set additional prefixes on the metric names.
+
+    verbose: Verbosity mode, 0 or 1. Mode 0 is silent, and mode 1
+      displays messages when the callback takes an action.
+    save_best_only: if save_best_only=True, it only saves when the model
+      is considered the "best" and the latest best model according to the
+      quantity monitored will not be overwritten. If filepath doesn't
+      contain formatting options like {epoch} then filepath will be
+      overwritten by each new better model.
+    save_weights_only: if True, then only the model's weights will be saved
+      (model.save_weights(filepath)), else the full model is saved
+      (model.save(filepath)).
+    save_freq: 'epoch' or integer. When using 'epoch', the callback
+      saves the model after each epoch. When using integer, the callback
+      saves the model at end of this many batches. 
+  Returns:
+    ModelCheckpointCallback
+  """
+  callback = tf.keras.callbacks.ModelCheckpoint(
+    filepath=filepath,
+    monitor=monitor,
+    verbose=verbose,
+    save_best_only=save_best_only,
+    save_weights_only=save_weights_only,
+    save_freq=save_freq
+  )
+  return callback
+
+def create_early_stopping_callback(monitor='val_loss', min_delta=0, mode='auto', 
+                                   patience=0, start_from_epoch=0):
+  """
+  Creates EarlyStopping callback
+
+  Args:
+  monitor: Quantity to be monitored.
+  min_delta: Minimum change in the monitored quantity
+      to qualify as an improvement, i.e. an absolute
+      change of less than min_delta, will count as no
+      improvement.
+  patience: Number of epochs with no improvement
+      after which training will be stopped.
+  mode: One of {"auto", "min", "max"}. In min mode,
+      training will stop when the quantity
+      monitored has stopped decreasing; in "max"
+      mode it will stop when the quantity
+      monitored has stopped increasing; in "auto"
+      mode, the direction is automatically inferred
+      from the name of the monitored quantity.
+  start_from_epoch: Number of epochs to wait before starting
+      to monitor improvement. This allows for a warm-up period in which
+      no improvement is expected and thus training will not be stopped.
+  Returns:
+    EarlyStoppingCallback
+  """
+  callback = tf.keras.callbacks.EarlyStopping(
+      monitor=monitor,
+      min_delta=min_delta,
+      mode=mode,
+      patience=patience,
+      start_from_epoch=start_from_epoch
+  )
+  return callback
+
+
 def preprocess_image(image, label, img_shape=224, scale=False):
   """
   Converts img datatype from 'uint8' -> 'float32' and reshapes
