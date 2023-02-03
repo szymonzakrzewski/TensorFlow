@@ -16,6 +16,8 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.layers import Dense, Flatten, Conv2D, MaxPool2D, Activation
 from tensorflow.keras import Sequential
 from tensorflow.keras.losses import BinaryCrossentropy, CategoricalCrossentropy
+from tensorflow.keras.layers.experimental import preprocessing
+
 
 import tensorflow_hub as hub
 import zipfile
