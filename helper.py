@@ -407,7 +407,7 @@ def load_and_prep_image(filename, img_shape=224, scale=True):
   img = tf.io.decode_image(img, channels=3)
 
   # Resize the image
-  imt = tf.image.resize(img, size=[img_shape, img_shape])
+  img = tf.image.resize(img, size=[img_shape, img_shape])
 
   # Scale
   if scale:
