@@ -25,6 +25,28 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
+def pred_and_plot(model, filename, class_names):
+  """
+  Imports an image located at filename, makes a prediction on it with
+  a trained model and plots the image with the predicted class as the title.
+  """
+  # Import the target image and preprocess it
+  img = load_and_prep_image(filename)
+
+  # Make a prediction
+  pred = model.predict(tf.expand_dims(img, axis=0))
+
+  # Get the predicted class
+  if len(pred[0]) > 1: # check for multi-class
+    pred_class = class_names[pred.argmax()] # if more than one output, take the max
+  else:
+    pred_class = class_names[int(tf.round(pred)[0][0])] # if only one output, round
+
+  # Plot the image and predicted class
+  plt.imshow(img)
+  plt.title(f"Prediction: {pred_class}")
+  plt.axis(False);
+
 def create_model_checkpoint_callback(filepath, monitor="val_loss", verbose=1, 
                                    save_best_only=True, save_weights_only=True,
                                    save_freq='epoch'):
