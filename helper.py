@@ -25,6 +25,41 @@ import random
 
 IMAGE_SHAPE = (224, 224)
 
+def evaluation(y_true, y_pred):
+  """
+  Calculates Accuracy, Precision, Recall and F1 score
+  of a binary classification model.
+
+  Args:
+    y_true (list): list of targets
+    y_pred (list): list of predicted values
+
+  Returns:
+    Dictionary with Accuracy, Precision, Recall and F1 score values
+  """
+  from sklearn.metrics import f1_score
+
+  m = tf.keras.metrics.Accuracy()
+  m.update_state(y_true, y_pred)
+  acc_res = m.result().numpy() * 100
+
+  m = tf.keras.metrics.Precision()
+  m.update_state(y_true, y_pred)
+  prec_res = m.result().numpy() * 100
+
+  m = tf.keras.metrics.Recall()
+  m.update_state(y_true, y_pred)
+  rec_res = m.result().numpy() * 100
+
+  f1_res = f1_score(y_true, y_pred) * 100
+
+  return {
+      "accuracy": acc_res,
+      "precision": prec_res,
+      "recall": rec_res,
+      "f1_score": f1_res
+      }
+
 def pred_and_plot(model, filename, class_names):
   """
   Imports an image located at filename, makes a prediction on it with
